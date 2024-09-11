@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.acmerobotics.roadrunner.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,7 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 
 
 @Autonomous(name="BlueLong", group="Robot")
@@ -54,7 +56,11 @@ public class Blue2 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        new TrajectoryBuilder(new Pose2d(6, -66, 0))
+                .forward(10)
+                .build();
 
     }
 }
+
 
