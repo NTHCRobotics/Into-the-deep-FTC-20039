@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
+
 import java.util.Arrays;
 @TeleOp(name="drivercontrol", group="Monkeys")
 //@Disabled  This way it will run on the robot
@@ -234,15 +235,19 @@ public class Drive_Control extends OpMode {
     }
 
     public void ClawGrip() {
+        //Ccontinuous rotation servo
         if(gamepad2.left_bumper){
-            Claw.setDirection();
+            Claw.setPosition(1.0);
         }else if(gamepad2.right_bumper){
-            Claw.setDirection();
+            Claw.setPosition(-1);
+        }else {
+            Claw.setPosition(0);
         }
 
     }
 
     public void Clawroation() {
+        // Positional Servo
         if (gamepad1.triangle) {
             Claw2.setPosition(.50);
         } else if (gamepad1.square) {
