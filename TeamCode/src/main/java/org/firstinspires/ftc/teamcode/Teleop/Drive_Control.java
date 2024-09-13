@@ -225,6 +225,7 @@ public class Drive_Control extends OpMode {
 
     //    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void RocketBoom() {
+
         if (gamepad2.dpad_up) {
             Rocket.setPower(1);
         } else if (gamepad2.dpad_down) {
