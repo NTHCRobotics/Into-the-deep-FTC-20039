@@ -56,9 +56,9 @@ public class Blue2 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        new TrajectoryBuilder(new Pose2d(6, -66, 0))
-                .forward(10)
-                .build();
+        //new TrajectoryBuilder(new Pose2d(6, -66, 0))
+        //        .forward(10)
+        //        .build();
 
     }
 }

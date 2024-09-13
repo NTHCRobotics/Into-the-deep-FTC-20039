@@ -39,24 +39,22 @@ public class Drive_Control extends OpMode {
     private DcMotorEx wheelBL;
     private DcMotorEx wheelBR;
     private DcMotorEx Verticallift;
+    private DcMotorEx Rocket;
 
-
+//Servos
     private Servo Claw2;
     //private DcMotorEx Insertnamehere
     //private DcMotorEx Insertnamehere
     private Servo Claw;
 
 
-
     private double speedMod;
     private final boolean rumbleLevel = true;
     private double rotation = 0;
-    final double TRIGGER_THRESHOLD  = 0.75;
+    final double TRIGGER_THRESHOLD = 0.75;
     private boolean isGrabbing = false;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-
-
 
 
     /*
@@ -79,7 +77,7 @@ public class Drive_Control extends OpMode {
 
 
         Verticallift = hardwareMap.get(DcMotorEx.class, "verticallift");
-
+        Rocket = hardwareMap.get(DcMotorEx.class, "rocket");
 
 
         //------------SERVOS////
@@ -90,13 +88,10 @@ public class Drive_Control extends OpMode {
         //Wheels
 
 
-
         wheelFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelFR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         wheelBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-
-
 
 
         Verticallift.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -116,6 +111,7 @@ public class Drive_Control extends OpMode {
 
 
     }
+
     //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
@@ -136,6 +132,7 @@ public class Drive_Control extends OpMode {
         previousRunTime = getRuntime();
 
     }
+
     //----------------------------------------------------------------------------------------------------------------------------------------------------
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -146,7 +143,6 @@ public class Drive_Control extends OpMode {
         precisionControl();
         drivingControl();
         Verticallift();
-
 
 
 //________________________________________________________________________________________________________________________________________________________________________________________________________________-
@@ -184,6 +180,7 @@ public class Drive_Control extends OpMode {
             //youtube
         }
     }
+
     //____________________________________________________________________________________________________________________________________________________________________________
     public void drivingControl() {
         //gets controller input
@@ -204,11 +201,12 @@ public class Drive_Control extends OpMode {
         wheelBL.setPower(v3 * speedMod);
         wheelBR.setPower(v4 * speedMod);
     }
+
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public void Verticallift() {
         if (gamepad2.circle) {
-        Verticallift.setTargetPosition(0);
-        Verticallift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            Verticallift.setTargetPosition(0);
+            Verticallift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         if (gamepad2.triangle) {
             Verticallift.setTargetPosition(2000);
@@ -223,12 +221,35 @@ public class Drive_Control extends OpMode {
             Verticallift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
     }
-    //    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    public void RocketBoom() {
+        if (gamepad2.dpad_up) {
+            Rocket.setPower(1);
+        } else if (gamepad2.dpad_down) {
+            Rocket.setPower(-1);
+        } else {
+            Rocket.setPower(0);
+        }
+    }
+
+    public void ClawGrip() {
+        if(gamepad2.left_bumper){
+            Claw.setDirection();
+        }else if(gamepad2.right_bumper){
+            Claw.setDirection();
+        }
 
     }
 
+    public void Clawroation() {
+        if (gamepad1.triangle) {
+            Claw2.setPosition(.50);
+        } else if (gamepad1.square) {
+            Claw2.setPosition(0);
+        }
+    }
+}
 
 
 
