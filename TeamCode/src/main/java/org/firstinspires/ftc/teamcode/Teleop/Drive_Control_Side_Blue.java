@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.Arrays;
 @TeleOp(name="drivercontrol", group="Monkeys")
 //@Disabled  This way it will run on the robot
-public class Drive_Control extends OpMode {
+public class Drive_Control_Side_Blue extends OpMode {
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();  //timer
 
@@ -266,13 +266,13 @@ public class Drive_Control extends OpMode {
 
 
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
+/*
+ * Code to run ONCE after the driver hits STOP
+ */
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
+/*
+ * Code to run ONCE after the driver hits STOP
+ */
 
 
 //@Override
