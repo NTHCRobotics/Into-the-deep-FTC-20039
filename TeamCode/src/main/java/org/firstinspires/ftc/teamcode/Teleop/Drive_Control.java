@@ -151,7 +151,8 @@ public class Drive_Control extends OpMode {
         precisionControl();
         drivingControl();
         Verticallift();
-
+        getAmountRed();
+        getAmountBlue();
 
 //________________________________________________________________________________________________________________________________________________________________________________________________________________-
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
@@ -170,6 +171,13 @@ public class Drive_Control extends OpMode {
     }
 
     //_______________________________________________________________________________________________________________________________________________________
+    public int getAmountRed(){
+        return colorSensor.red();
+    }
+    public int getAmountBlue(){
+        return colorSensor.blue();
+    }
+
     public void precisionControl() {
         if (gamepad1.left_trigger > 0) {
             speedMod = .25;
