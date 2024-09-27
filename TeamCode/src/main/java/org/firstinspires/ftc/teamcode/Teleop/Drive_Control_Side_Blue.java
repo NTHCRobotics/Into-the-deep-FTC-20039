@@ -59,6 +59,9 @@ public class Drive_Control_Side_Blue extends OpMode {
     private boolean isGrabbing = false;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
+    private int redValue = colorSensor.red();
+    private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
+    private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
 
 
     /*
@@ -115,7 +118,6 @@ public class Drive_Control_Side_Blue extends OpMode {
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialization Complete");
 
-
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -163,7 +165,7 @@ public class Drive_Control_Side_Blue extends OpMode {
 
 //        telemetry.addData("range", String.format("%.3f cm", sideDistanceSensor.getDistance(DistanceUnit.CM)));
 //        telemetry.addData("range edited", sideDistanceSensor.getDistance(DistanceUnit.CM));
-
+        telemetry.addData("Red", redValue);
         telemetry.update();
     }
 
@@ -260,6 +262,15 @@ public class Drive_Control_Side_Blue extends OpMode {
         } else if (gamepad1.square) {
             Claw2.setPosition(0);
         }
+    }
+
+    public void Redshoot(){
+        if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
+            Claw.setPosition(-1); // sets the claw position to -1 if the red value is greater than the threshold
+        }else if(redValue < TARGET_BLUE_THRESHOLD){
+            Claw.setPosition(0);
+        }
+
     }
 }
 

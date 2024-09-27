@@ -59,7 +59,9 @@ public class Drive_Control extends OpMode {
     private boolean isGrabbing = false;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-
+    private int blueValue = colorSensor.blue();
+    private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
+    private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -163,7 +165,7 @@ public class Drive_Control extends OpMode {
 
 //        telemetry.addData("range", String.format("%.3f cm", sideDistanceSensor.getDistance(DistanceUnit.CM)));
 //        telemetry.addData("range edited", sideDistanceSensor.getDistance(DistanceUnit.CM));
-
+        telemetry.addData("Blue", blueValue);
         telemetry.update();
     }
 
@@ -242,11 +244,11 @@ public class Drive_Control extends OpMode {
 
     public void ClawGrip() {
         //Ccontinuous rotation servo
-        if(gamepad2.left_bumper){
+        if (gamepad2.left_bumper) {
             Claw.setPosition(1.0);
-        }else if(gamepad2.right_bumper){
+        } else if (gamepad2.right_bumper) {
             Claw.setPosition(-1);
-        }else {
+        } else {
             Claw.setPosition(0);
         }
 
@@ -261,8 +263,15 @@ public class Drive_Control extends OpMode {
             Claw2.setPosition(0);
         }
     }
-}
 
+    public void BlueSampleShoot() {
+        if (blueValue > TARGET_BLUE_THRESHOLD) { // checks if the blue vaule to see if it is above the threshold
+            Claw.setPosition(-1); // if above shoot the blue sample out of the robot
+        } else if (blueValue < TARGET_RED_THRESHOLD) { // checks if the red value is below the threshold
+            Claw.setPosition(0);  // keeps the blue sample in the robot
+        }
+    }
+}
 
 
 
