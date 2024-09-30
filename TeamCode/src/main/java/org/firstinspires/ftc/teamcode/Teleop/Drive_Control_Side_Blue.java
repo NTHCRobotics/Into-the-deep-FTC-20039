@@ -156,6 +156,7 @@ public class Drive_Control_Side_Blue extends OpMode {
         precisionControl();
         drivingControl();
         Verticallift();
+        DectectYellow();
 
 //________________________________________________________________________________________________________________________________________________________________________________________________________________-
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);

@@ -60,6 +60,11 @@ public class Drive_Control extends OpMode {
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
     private int blueValue = colorSensor.blue();
+    private int redValue = colorSensor.red();
+    private int greenValue = colorSensor.green();
+    private static final int YELLOW_RED_THRESHOLD = 200;  // Minimum red value for yellow
+    private static final int YELLOW_GREEN_THRESHOLD = 200; // Minimum green value for yellow
+    private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
     private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
     private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
 
@@ -151,9 +156,7 @@ public class Drive_Control extends OpMode {
         precisionControl();
         drivingControl();
         Verticallift();
-        getAmountRed();
-        getAmountBlue();
-
+        DectectYellow();
 //________________________________________________________________________________________________________________________________________________________________________________________________________________-
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
 
@@ -166,7 +169,10 @@ public class Drive_Control extends OpMode {
 
 //        telemetry.addData("range", String.format("%.3f cm", sideDistanceSensor.getDistance(DistanceUnit.CM)));
 //        telemetry.addData("range edited", sideDistanceSensor.getDistance(DistanceUnit.CM));
+        telemetry.addData("Red", redValue);
+        telemetry.addData("Green", greenValue);
         telemetry.addData("Blue", blueValue);
+
         telemetry.update();
     }
 
@@ -177,7 +183,17 @@ public class Drive_Control extends OpMode {
     public int getAmountBlue(){
         return colorSensor.blue();
     }
-
+    public  void DectectYellow() {
+        if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
+            // Yellow object detected
+            telemetry.addData("Status", "Yellow Detected");
+            telemetry.update();
+        } else {
+            // No yellow object detected
+            telemetry.addData("Status", "No Yellow Detected");
+            telemetry.update();
+        }
+    }
     public void precisionControl() {
         if (gamepad1.left_trigger > 0) {
             speedMod = .25;
