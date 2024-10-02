@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrol", group="Monkeys")
+@TeleOp(name="drivercontrolMonkeys", group="Monkeys")
 //@Disabled  This way it will run on the robot
 public class Drive_Control_Side_Blue extends OpMode {
     // Declare OpMode members.
@@ -181,13 +181,7 @@ public class Drive_Control_Side_Blue extends OpMode {
 
         telemetry.update();
     }
-    public int getAmountRed(){
-        return colorSensor.red();
-    }
-    public int getAmountBlue(){
-        return colorSensor.blue();
 
-    }
     public  void DectectYellow() {
         if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
             // Yellow object detected
