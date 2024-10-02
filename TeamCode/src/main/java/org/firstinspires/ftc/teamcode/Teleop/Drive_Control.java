@@ -157,6 +157,10 @@ public class Drive_Control extends OpMode {
         drivingControl();
         Verticallift();
         DectectYellow();
+        ClawGrip();
+        Clawroation();
+        RocketBoom();
+        BlueSampleShoot();
 //________________________________________________________________________________________________________________________________________________________________________________________________________________-
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
 
