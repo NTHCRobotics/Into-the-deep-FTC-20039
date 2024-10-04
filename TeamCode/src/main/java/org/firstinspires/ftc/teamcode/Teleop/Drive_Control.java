@@ -34,8 +34,6 @@ public class Drive_Control extends OpMode {
     //private DigitalChannel intakeSensor;
 
     //Motors
-    private Rev2mDistanceSensor sideLeftDistanceSensor;
-    private Rev2mDistanceSensor sideRightDistanceSensor;
     private DcMotorEx wheelFL;
     private DcMotorEx wheelFR;
     private DcMotorEx wheelBL;
@@ -56,7 +54,6 @@ public class Drive_Control extends OpMode {
     private final boolean rumbleLevel = true;
     private double rotation = 0;
     final double TRIGGER_THRESHOLD = 0.75;
-    private boolean isGrabbing = false;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
     private int blueValue = colorSensor.blue();
@@ -80,7 +77,7 @@ public class Drive_Control extends OpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
 
-        //Motors
+        //Motors, mounts variables to hardware ports.
         wheelFL = hardwareMap.get(DcMotorEx.class, "wheelFL");
         wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
@@ -160,7 +157,8 @@ public class Drive_Control extends OpMode {
         ClawGrip();
         Clawroation();
         RocketBoom();
-        BlueSampleShoot();
+        SampleShoot();
+        Speices();
 //________________________________________________________________________________________________________________________________________________________________________________________________________________-
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
 
@@ -181,13 +179,15 @@ public class Drive_Control extends OpMode {
     }
 
     //_______________________________________________________________________________________________________________________________________________________
-    public int getAmountRed(){
+    public int getAmountRed() {
         return colorSensor.red();
     }
-    public int getAmountBlue(){
+
+    public int getAmountBlue() {
         return colorSensor.blue();
     }
-    public  void DectectYellow() {
+
+    public void DectectYellow() {
         if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
             // Yellow object detected
             telemetry.addData("Status", "Yellow Detected");
@@ -198,6 +198,7 @@ public class Drive_Control extends OpMode {
             telemetry.update();
         }
     }
+
     public void precisionControl() {
         if (gamepad1.left_trigger > 0) {
             speedMod = .25;
@@ -273,13 +274,12 @@ public class Drive_Control extends OpMode {
     public void ClawGrip() {
         //Ccontinuous rotation servo
         if (gamepad2.left_bumper) {
-            Claw.setPosition(1.0);
+            Claw.setPosition(1.0); // Moves the claw forward (I think)
         } else if (gamepad2.right_bumper) {
-            Claw.setPosition(-1);
+            Claw.setPosition(-1); // Moves the claw backwards (I think)
         } else {
-            Claw.setPosition(0);
+            Claw.setPosition(0); // Stationary position
         }
-
 
     }
 
@@ -292,14 +292,32 @@ public class Drive_Control extends OpMode {
         }
     }
 
-    public void BlueSampleShoot() {
+    public void SampleShoot() {
         if (blueValue > TARGET_BLUE_THRESHOLD) { // checks if the blue vaule to see if it is above the threshold
             Claw.setPosition(-1); // if above shoot the blue sample out of the robot
         } else if (blueValue < TARGET_RED_THRESHOLD) { // checks if the red value is below the threshold
             Claw.setPosition(0);  // keeps the blue sample in the robot
         }
+        if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
+            // Yellow object detected
+            telemetry.addData("Status", "Yellow Detected");
+            telemetry.update();
+            Claw.setPosition(0); // Keeps the yellow sample in the robot
+        } else {
+            // No yellow object detected
+            telemetry.addData("Status", "No Yellow Detected");
+            telemetry.update();
+        }
     }
-}
+        public void Speices () {
+
+
+        }
+
+    }
+
+
+
 
 
 
