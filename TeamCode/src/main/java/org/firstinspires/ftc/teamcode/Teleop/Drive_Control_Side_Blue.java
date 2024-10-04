@@ -17,9 +17,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import java.util.Arrays;
-@TeleOp(name="drivercontrol", group="Monkeys")
+@TeleOp(name="drivercontrolMonkeys", group="Monkeys")
 //@Disabled  This way it will run on the robot
-public class Drive_Control extends OpMode {
+public class Drive_Control_Side_Blue extends OpMode {
     // Declare OpMode members.
     private final ElapsedTime runtime = new ElapsedTime();  //timer
 
@@ -34,6 +34,8 @@ public class Drive_Control extends OpMode {
     //private DigitalChannel intakeSensor;
 
     //Motors
+    private Rev2mDistanceSensor sideLeftDistanceSensor;
+    private Rev2mDistanceSensor sideRightDistanceSensor;
     private DcMotorEx wheelFL;
     private DcMotorEx wheelFR;
     private DcMotorEx wheelBL;
@@ -54,16 +56,18 @@ public class Drive_Control extends OpMode {
     private final boolean rumbleLevel = true;
     private double rotation = 0;
     final double TRIGGER_THRESHOLD = 0.75;
+    private boolean isGrabbing = false;
     private double previousRunTime;
     private double inputDelayInSeconds = .5;
-    private int blueValue = colorSensor.blue();
-    private int redValue = colorSensor.red();
-    private int greenValue = colorSensor.green();
+    int redValue = colorSensor.red();
+    int blueValue = colorSensor.blue();
+    int greenValue = colorSensor.green();
+    private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
+    private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
     private static final int YELLOW_RED_THRESHOLD = 200;  // Minimum red value for yellow
     private static final int YELLOW_GREEN_THRESHOLD = 200; // Minimum green value for yellow
     private static final int YELLOW_BLUE_THRESHOLD = 100; // Maximum blue value for yellow
-    private static final int TARGET_RED_THRESHOLD = 100;  // Minimum red value for scoring color
-    private static final int TARGET_BLUE_THRESHOLD = 100; // Minimum blue value for scoring color
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -77,7 +81,7 @@ public class Drive_Control extends OpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
 
-        //Motors, mounts variables to hardware ports.
+        //Motors
         wheelFL = hardwareMap.get(DcMotorEx.class, "wheelFL");
         wheelFR = hardwareMap.get(DcMotorEx.class, "wheelFR");
         wheelBL = hardwareMap.get(DcMotorEx.class, "wheelBL");
@@ -119,7 +123,6 @@ public class Drive_Control extends OpMode {
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialization Complete");
 
-
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -154,11 +157,11 @@ public class Drive_Control extends OpMode {
         drivingControl();
         Verticallift();
         DectectYellow();
+        Redshoot();
+        RocketBoom();
         ClawGrip();
         Clawroation();
-        RocketBoom();
-        SampleShoot();
-        Speices();
+
 //________________________________________________________________________________________________________________________________________________________________________________________________________________-
         telemetry.addData("Left Trigger Position", gamepad1.left_trigger);
 
@@ -171,6 +174,7 @@ public class Drive_Control extends OpMode {
 
 //        telemetry.addData("range", String.format("%.3f cm", sideDistanceSensor.getDistance(DistanceUnit.CM)));
 //        telemetry.addData("range edited", sideDistanceSensor.getDistance(DistanceUnit.CM));
+        // Color Sensor Data
         telemetry.addData("Red", redValue);
         telemetry.addData("Green", greenValue);
         telemetry.addData("Blue", blueValue);
@@ -178,16 +182,7 @@ public class Drive_Control extends OpMode {
         telemetry.update();
     }
 
-    //_______________________________________________________________________________________________________________________________________________________
-    public int getAmountRed() {
-        return colorSensor.red();
-    }
-
-    public int getAmountBlue() {
-        return colorSensor.blue();
-    }
-
-    public void DectectYellow() {
+    public  void DectectYellow() {
         if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
             // Yellow object detected
             telemetry.addData("Status", "Yellow Detected");
@@ -199,6 +194,7 @@ public class Drive_Control extends OpMode {
         }
     }
 
+    //_______________________________________________________________________________________________________________________________________________________
     public void precisionControl() {
         if (gamepad1.left_trigger > 0) {
             speedMod = .25;
@@ -273,13 +269,14 @@ public class Drive_Control extends OpMode {
 
     public void ClawGrip() {
         //Ccontinuous rotation servo
-        if (gamepad2.left_bumper) {
-            Claw.setPosition(1.0); // Moves the claw forward (I think)
-        } else if (gamepad2.right_bumper) {
-            Claw.setPosition(-1); // Moves the claw backwards (I think)
-        } else {
-            Claw.setPosition(0); // Stationary position
+        if(gamepad2.left_bumper){
+            Claw.setPosition(1.0);
+        }else if(gamepad2.right_bumper){
+            Claw.setPosition(-1);
+        }else {
+            Claw.setPosition(0);
         }
+
 
     }
 
@@ -292,42 +289,26 @@ public class Drive_Control extends OpMode {
         }
     }
 
-    public void SampleShoot() {
-        if (blueValue > TARGET_BLUE_THRESHOLD) { // checks if the blue vaule to see if it is above the threshold
-            Claw.setPosition(-1); // if above shoot the blue sample out of the robot
-        } else if (blueValue < TARGET_RED_THRESHOLD) { // checks if the red value is below the threshold
-            Claw.setPosition(0);  // keeps the blue sample in the robot
-        }
-        if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
-            // Yellow object detected
-            telemetry.addData("Status", "Yellow Detected");
-            telemetry.update();
-            Claw.setPosition(0); // Keeps the yellow sample in the robot
-        } else {
-            // No yellow object detected
-            telemetry.addData("Status", "No Yellow Detected");
-            telemetry.update();
-        }
-    }
-        public void Speices () {
-
-
+    public void Redshoot(){
+        if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
+            Claw.setPosition(-1); // sets the claw position to -1 if the red value is greater than the threshold
+        }else if(redValue < TARGET_BLUE_THRESHOLD){
+            Claw.setPosition(0);
         }
 
     }
+}
 
 
 
 
+/*
+ * Code to run ONCE after the driver hits STOP
+ */
 
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
+/*
+ * Code to run ONCE after the driver hits STOP
+ */
 
 
 //@Override
