@@ -157,7 +157,7 @@ public class Drive_Control_Side_Blue extends OpMode {
         drivingControl();
         Verticallift();
         DectectYellow();
-        Redshoot();
+        SampleRedshoot();
         RocketBoom();
         ClawGrip();
         Clawroation();
@@ -289,11 +289,21 @@ public class Drive_Control_Side_Blue extends OpMode {
         }
     }
 
-    public void Redshoot(){
+    public void SampleRedshoot(){
         if(redValue > TARGET_RED_THRESHOLD){ // checks if the red value is greater than the threshold
             Claw.setPosition(-1); // sets the claw position to -1 if the red value is greater than the threshold
-        }else if(redValue < TARGET_BLUE_THRESHOLD){
+        }else if(redValue < TARGET_BLUE_THRESHOLD) {
             Claw.setPosition(0);
+        }
+        if (redValue > YELLOW_RED_THRESHOLD && greenValue > YELLOW_GREEN_THRESHOLD && blueValue < YELLOW_BLUE_THRESHOLD) {
+                // Yellow object detected
+                telemetry.addData("Status", "Yellow Detected");
+                telemetry.update();
+                Claw.setPosition(0); // Keeps the yellow sample in the robot
+            } else {
+                // No yellow object detected
+                telemetry.addData("Status", "No Yellow Detected");
+                telemetry.update();
         }
 
     }
